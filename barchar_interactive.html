@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <button onclick="createData()">Change Data</button>
+    <button onclick="filterData()">Filter Data</button>
+    <input type="text" id="minValue" placeholder="Enter minimun value to display">
+
+
+    <div id="displayhere"></div>
+
+
+
+    <script>
+        // Size of Chart
+
+        var w = 500;
+        var h = 500;
+        var numberOfBars = 19;
+        var barPadding = 1;
+
+        // Useful Variables
+        var colWidth = w / numberOfBars;
+        var barWidth = colWidth - barPadding;
+
+        // Create an SVG element
+        var svg = d3.select('#displayhere')
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        // First Call to change_data will plot the initial chart
+        createData();
+        // Generates a Random set of data and plots it as a bar chart
+        // Called once on page load, then each time the button is clicked.
+
+        function createData() {
+            var data = createRandomData(numberOfBars);
+            plot_data(data);
+        }
+
+        // Generates a Random set of data and plots it as a bar chart
+        // Called once on page load, then each time the button is clicked.
+        function filterData() {
+            var data = createRandomData(numberOfBars);
+            data = data.filter(function(d) { return d >= get_filter_value(); });
+            plot_data(data);
+        }
+
+
+        function plot_data(data) {
+        // Bind the data to the collections of rectangles and text in the svg element
+
+            var bars = svg.selectAll('rect')
+                .data(data);
+            var labels = svg.selectAll('text')
+                .data(data);
+
+            // Remove any unneeded rectangles and labels (if new data has less items than the existing chart)
+            bars.exit().remove();
+            labels.exit().remove();
+
+            // Append any new rectangles and labels that are needed (if new data has more items than existing chart)
+            create_bars(bars);
+            createLabels(labels);
+
+            // There should now be the right number of rectangles and labels. 
+            // Resize and position each one according to the new data items.
+            resize_bars(bars, data);
+            positionLabels(labels, data)
+        }
+
+
+
+        function create_bars(bars) {
+            bars.enter()
+                .append('rect');
+        }
+
+
+
+        function createLabels(labels) {
+            labels.enter()
+                .append('text')
+                .attr("text-anchor", "middle")
+                .attr("font-family", "arial")
+                .attr("font-size", "10px")
+                .attr("fill", "white")
+        }
+
+        function positionLabels(labels, data) {
+            labels.transition()
+                .duration(500)
+                .text(function(d) {
+                    return d;
+                })
+                .attr("x", function(d, i) {
+                    return colWidth * i + barWidth / 2;
+                })
+                .attr("y", function(d) {
+                    return h - d + 14;
+                })
+            }
+
+
+        function resize_bars(bars, data) {
+            bars.transition()
+                .duration(500)
+                .attr('x', function(d, i) {
+                    return colWidth * i;
+                })
+                .attr('y', function(d) {
+                    return h - d;
+                })
+                .attr("width", barWidth)
+                .attr("height", function(d) {
+                    return d;
+                });
+        }
+
+
+
+        //We generate 19 random numbers from 0 to 500
+        function createRandomData() {
+            var data = [];
+            for (var i = 0; i < numberOfBars; i++) {
+                var newvalue = Math.floor(Math.random() * 500);
+                data.push(newvalue);
+            }
+            return data;
+
+        }
+
+        function get_filter_value() {
+            var value = null;
+            var x = document.getElementById("minValue").value;
+            value = parseInt(x);
+            if (isNaN(value))
+                value = 100;
+
+            return value;
+        }
+    </script>
+
+
+
+
+
+
+
+
+</body>
+
+</html>

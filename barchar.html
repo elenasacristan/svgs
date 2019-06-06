@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+
+    
+</head>
+<body>
+    
+<div id="displayhere"></div>
+
+
+<!--<svg>
+    
+<circle cx="20" cy="20" r="20" fill="red"/>
+
+<svg>-->
+
+
+<script>
+    
+var h=500;
+var w=500;
+var barpadding=1;
+
+var dataset=[50, 100, 60, 300, 500, 320, 120, 46, 400];
+var color=['blue', 'red', 'lightblue', 'grey', 'green', 'pink', 'grey', 'purple', 'lightgreen'];
+
+var colwidth=w/dataset.length;
+var barwidth = colwidth - barpadding;
+   
+var svg = d3.select("#displayhere")
+        .append('svg')
+        .attr("height",h)
+        .attr("width",w)
+        
+svg.selectAll('rect')
+    .data(dataset)
+    .enter()
+    .append('rect')
+    .attr("x", function(d,i){
+        return colwidth * i;
+    })
+    .attr("y", function(d){
+        return h-d;
+    })
+    .attr("width", barwidth)
+    .attr("height", function(d){
+        return d;
+    })
+    .attr("fill", function(d,i){
+        return color[i];
+        
+    })
+    
+    
+
+svg.selectAll('text')
+    .data(dataset)
+    .enter()
+    .append('text')
+    .text(function(d){
+        return d;
+    })
+    .attr("x", function(d,i){
+        return (colwidth*i)+(barwidth/2);
+    })
+    .attr("y", function(d){
+        return h-d+20;
+    })
+    .attr("fill", "white")
+    .attr("text-anchor","middle")
+    .attr("font-size","15px")
+    .attr("font-family","Roboto")
+    
+   
+   
+   
+   
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>
